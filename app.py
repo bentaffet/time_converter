@@ -73,10 +73,15 @@ if st.button("Run"):
 
     # ---------------- WA ----------------
     st.subheader("World Athletics Score")
-    wa = get_score(event_key, t_sec, wa_table)
+    wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
 
-    if wa:
-        st.metric("Points", wa)
+    if wa_points is not None:
+        st.metric("Points", int(wa_points))
+
+        st.subheader("Equivalent Performances")
+
+        for name, t in wa_equiv:
+            st.write(name, fmt_time(t))
 
     # ---------------- NEW ----------------
     st.subheader("2023-2026 PR Percentile")

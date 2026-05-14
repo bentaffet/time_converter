@@ -213,12 +213,12 @@ def get_score(event_key, time_sec, table):
     cfg = EVENT_MAP[event_key]
 
     if not cfg["wa"]:
-        return None
+        return None, []
 
     race_key = cfg["wa_key"]
 
     if race_key not in table:
-        return None
+        return None, []
 
     points_times = [
         (pts, parse_time(t))
@@ -233,7 +233,18 @@ def get_score(event_key, time_sec, table):
         key=lambda x: abs(x[1] - time_sec)
     )
 
-    return best_pts
+    # -----------------------------
+    # build equivalent performances
+    # -----------------------------
+    equivalents = []
+
+    for event_name, col in table.items():
+        if best_pts in col:
+            t = parse_time(col[best_pts])
+            if t is not None:
+                equivalents.append((event_name, t))
+
+    return best_pts, equivalents
 
 
 # -----------------------------

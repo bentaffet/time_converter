@@ -80,50 +80,51 @@ if st.button("Run"):
 
     rows = []
 
-# ---------------- WA ----------------
+    # ---------------- WA ----------------
     wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
 
     if wa_points is not None:
         rows.append({
             "System": "World Athletics",
-            "Percentile": "N/A",
-            "Main Output": f"{int(wa_points)} pts",
-            "Equivalents": ", ".join(
-                f"{e}: {fmt_time(t)}"
-                for e, t in wa_equiv
-                if e in ["800m", "1500m", "3000m", "5000m", "10000m"]
-            )
+            "Score": int(wa_points),
+            "Percentile": "—",
+            "800m": next((fmt_time(t) for e, t in wa_equiv if e == "800m"), ""),
+            "1500m": next((fmt_time(t) for e, t in wa_equiv if e == "1500m"), ""),
+            "5000m": next((fmt_time(t) for e, t in wa_equiv if e == "5000m"), ""),
+            "10000m": next((fmt_time(t) for e, t in wa_equiv if e == "10000m"), ""),
         })
 
     # ---------------- NEW ----------------
     p, results = run_new_percentile(new_cdf, event_key, t_sec)
 
     if p is not None:
-        rows.append({
+        row = {
             "System": "2023–2026 PR",
+            "Score": "—",
             "Percentile": f"{100 - p:.2f}",
-            "Main Output": "Recent DIII pool",
-            "Equivalents": ", ".join(
-                f"{k}: {fmt_time(v)}"
-                for k, v in results[:3]
-            )
-        })
+        }
+
+        for k, v in results:
+            row[k] = fmt_time(v)
+
+        rows.append(row)
 
     # ---------------- LEGACY ----------------
     p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
 
     if p2 is not None:
-        rows.append({
+        row = {
             "System": "2015–2025 All",
+            "Score": "—",
             "Percentile": f"{100 - p2:.2f}",
-            "Main Output": "Full DIII history",
-            "Equivalents": ", ".join(
-                f"{k}: {fmt_time(v)}"
-                for k, v in results2[:3]
-            )
-        })
+        }
 
-    st.dataframe(rows, use_container_width=True)
+        for k, v in results2:
+            row[k] = fmt_time(v)
+
+        rows.append(row)
+
+    df = st.dataframe(rows, use_container_width=True)
         
 
 st.subheader("Notes")

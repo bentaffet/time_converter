@@ -102,13 +102,11 @@ if st.button("Run"):
             "Percentile": None
         }
 
-        for k, wa_name in WA_NAME_MAP.items():
-            wa_row[wa_name] = next(
-                (fmt_time(t) for e, t in wa_equiv if e == wa_name),
-                None
-            )
+        wa_dict = dict(wa_equiv)
 
-        rows.append(wa_row)
+        for event_key2, wa_name in WA_NAME_MAP.items():
+            val = wa_dict.get(wa_name)
+            wa_row[wa_name] = fmt_time(val) if val is not None else ""
 
     # ---------------- NEW ----------------
     if p is not None:
@@ -140,7 +138,7 @@ if st.button("Run"):
 
     df = pd.DataFrame(rows)
 
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(df, width="stretch")
         
 
 st.subheader("Notes")

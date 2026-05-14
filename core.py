@@ -61,14 +61,6 @@ EVENT_MAP = {
         "season": "outdoor",
         "new_key": "3000S_outdoor"
     },
-
-    "1Mile_outdoor": {
-        "display": "1 Mile Outdoor",
-        "wa": False,
-        "season": "outdoor",
-        "new_key": "1Mile_outdoor"
-    },
-
     # =====================================================
     # INDOOR TRACK
     # =====================================================

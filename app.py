@@ -80,7 +80,7 @@ if st.button("Run"):
         st.metric(label="Points", value=int(wa_points))
 
         st.subheader("Equivalent Performances")
-        desired_events = ["3000m", "5000m", "10000m", "800m", "1500m", "3000m SC"]
+        desired_events = ["800m", "1500m", "3000m", "3000m SC", "5000m", "10000m"]
         # format into nicer rows
         for event_name, t in wa_equiv:
             if event_name not in desired_events:

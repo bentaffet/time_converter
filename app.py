@@ -80,40 +80,44 @@ if st.button("Run"):
 
     rows = []
 
-    # ---------------- WA ----------------
-    if wa_points is not None:
-        wa_pct = None  # WA isn't percentile-based
+# ---------------- WA ----------------
+    wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
 
+    if wa_points is not None:
         rows.append({
             "System": "World Athletics",
             "Percentile": "N/A",
             "Main Output": f"{int(wa_points)} pts",
-            "Key Equivalents": ", ".join(
+            "Equivalents": ", ".join(
                 f"{e}: {fmt_time(t)}"
                 for e, t in wa_equiv
-                if e in ["3000m", "5000m", "10000m", "800m", "1500m"]
+                if e in ["800m", "1500m", "3000m", "5000m", "10000m"]
             )
         })
 
     # ---------------- NEW ----------------
+    p, results = run_new_percentile(new_cdf, event_key, t_sec)
+
     if p is not None:
         rows.append({
             "System": "2023–2026 PR",
             "Percentile": f"{100 - p:.2f}",
-            "Main Output": "DIII recent pool",
-            "Key Equivalents": ", ".join(
+            "Main Output": "Recent DIII pool",
+            "Equivalents": ", ".join(
                 f"{k}: {fmt_time(v)}"
                 for k, v in results[:3]
             )
         })
 
     # ---------------- LEGACY ----------------
+    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
+
     if p2 is not None:
         rows.append({
             "System": "2015–2025 All",
             "Percentile": f"{100 - p2:.2f}",
-            "Main Output": "DIII full history",
-            "Key Equivalents": ", ".join(
+            "Main Output": "Full DIII history",
+            "Equivalents": ", ".join(
                 f"{k}: {fmt_time(v)}"
                 for k, v in results2[:3]
             )

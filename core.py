@@ -131,7 +131,17 @@ EVENT_MAP = {
 LEGACY_CACHE = "legacy_cdf_cache.json"
 NEW_CACHE = "new_percentile_cache.json"
 
+def get_display_name(event_key: str, system: str = "new"):
+    cfg = EVENT_MAP[event_key]
 
+    if system == "wa":
+        return cfg.get("wa_key")
+
+    if system == "legacy":
+        return cfg.get("legacy_event")
+
+    # default (new system)
+    return cfg.get("new_key", event_key)
 # -----------------------------
 # TIME PARSER
 # -----------------------------

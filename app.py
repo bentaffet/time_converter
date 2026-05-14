@@ -53,6 +53,15 @@ legacy_cdf = load_cache_file(LEGACY_CACHE)
 new_cdf = load_cache_file(NEW_CACHE)
 wa_table = load_points_table(WA_CSV_PATH)
 
+WA_NAME_MAP = {
+    "800_outdoor": "800m",
+    "1500_outdoor": "1500m",
+    "3000_outdoor": "3000m",
+    "5000_outdoor": "5000m",
+    "10000_outdoor": "10000m",
+    "3000S_outdoor": "3000m SC",
+    "1Mile_outdoor": "1 Mile",
+}
 
 # -----------------------------
 # UI
@@ -80,51 +89,55 @@ if st.button("Run"):
 
     rows = []
 
-    # ---------------- WA ----------------
     wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
+    p, results = run_new_percentile(new_cdf, event_key, t_sec)
+    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
 
+    # ---------------- WA ----------------
     if wa_points is not None:
-        rows.append({
+        wa_row = {
             "System": "World Athletics",
             "Score": int(wa_points),
-            "Percentile": "—",
-            "800m": next((fmt_time(t) for e, t in wa_equiv if e == "800m"), ""),
-            "1500m": next((fmt_time(t) for e, t in wa_equiv if e == "1500m"), ""),
-            "5000m": next((fmt_time(t) for e, t in wa_equiv if e == "5000m"), ""),
-            "10000m": next((fmt_time(t) for e, t in wa_equiv if e == "10000m"), ""),
-        })
+            "Percentile": "—"
+        }
+
+        for k, wa_name in WA_NAME_MAP.items():
+            wa_row[wa_name] = next(
+                (fmt_time(t) for e, t in wa_equiv if e == wa_name),
+                ""
+            )
+
+        rows.append(wa_row)
 
     # ---------------- NEW ----------------
-    p, results = run_new_percentile(new_cdf, event_key, t_sec)
-
     if p is not None:
-        row = {
+        new_row = {
             "System": "2023–2026 PR",
             "Score": "—",
-            "Percentile": f"{100 - p:.2f}",
+            "Percentile": f"{100 - p:.2f}"
         }
 
         for k, v in results:
-            row[k] = fmt_time(v)
+            col = get_display_name(k, system="new")
+            new_row[col] = fmt_time(v)
 
-        rows.append(row)
+        rows.append(new_row)
 
     # ---------------- LEGACY ----------------
-    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
-
     if p2 is not None:
-        row = {
+        legacy_row = {
             "System": "2015–2025 All",
             "Score": "—",
-            "Percentile": f"{100 - p2:.2f}",
+            "Percentile": f"{100 - p2:.2f}"
         }
 
         for k, v in results2:
-            row[k] = fmt_time(v)
+            col = get_display_name(k, system="legacy")
+            legacy_row[col] = fmt_time(v)
 
-        rows.append(row)
+        rows.append(legacy_row)
 
-    df = st.dataframe(rows, use_container_width=True)
+    st.dataframe(rows, use_container_width=True, hide_index=True)
         
 
 st.subheader("Notes")

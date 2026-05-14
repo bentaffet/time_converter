@@ -265,12 +265,21 @@ def run_new_percentile(cdf, event_key, time_sec):
     for k, c in EVENT_MAP.items():
         if k == event_key:
             continue
-        if c.get("season") != cfg.get("season"):
-            continue
-        if c.get("new_key") not in cdf:
+
+        # must have data
+        other_dataset = c.get("new_key")
+        if other_dataset not in cdf:
             continue
 
-        eq = inverse_lookup(cdf[c["new_key"]], p)
+        # ❌ only exclude XC
+        if c.get("season") == "xc" or cfg.get("season") == "xc":
+            continue
+
+        # ✅ REMOVE SAME-SEASON FILTER (this was the bug)
+        # if c.get("season") != cfg.get("season"):
+        #     continue
+
+        eq = inverse_lookup(cdf[other_dataset], p)
         results.append((k, eq))
 
     return p, results

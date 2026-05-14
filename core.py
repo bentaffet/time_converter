@@ -8,7 +8,127 @@ from bisect import bisect_left
 # CONFIG
 # -----------------------------
 
-EVENT_MAP = { ... }  # KEEP YOUR EXACT DICT
+EVENT_MAP = {
+
+    # =====================================================
+    # OUTDOOR TRACK
+    # =====================================================
+
+    "800_outdoor": {
+        "display": "800 Meters Outdoor",
+        "wa": True,
+        "wa_key": "800m",
+        "season": "outdoor",
+        "legacy_event": "800 Meters",
+        "new_key": "800m_outdoor"
+    },
+
+    "1500_outdoor": {
+        "display": "1500 Meters Outdoor",
+        "wa": True,
+        "wa_key": "1500m",
+        "season": "outdoor",
+        "legacy_event": "1500 Meters",
+        "new_key": "1500m_outdoor"
+    },
+
+    "3000_outdoor": {
+        "display": "3000 Meters Outdoor",
+        "wa": False,
+        "season": "outdoor",
+        "new_key": "3000m_outdoor"
+    },
+
+    "5000_outdoor": {
+        "display": "5000 Meters Outdoor",
+        "wa": True,
+        "wa_key": "5000m",
+        "season": "outdoor",
+        "legacy_event": "5000 Meters",
+        "new_key": "5000m_outdoor"
+    },
+
+    "10000_outdoor": {
+        "display": "10000 Meters Outdoor",
+        "wa": True,
+        "wa_key": "10000m",
+        "season": "outdoor",
+        "legacy_event": "10000 Meters",
+        "new_key": "10000m_outdoor"
+    },
+
+    "3000S_outdoor": {
+        "display": "3000m Steeplechase Outdoor",
+        "wa": False,
+        "season": "outdoor",
+        "new_key": "3000S_outdoor"
+    },
+
+    "1Mile_outdoor": {
+        "display": "1 Mile Outdoor",
+        "wa": False,
+        "season": "outdoor",
+        "new_key": "1Mile_outdoor"
+    },
+
+    # =====================================================
+    # INDOOR TRACK
+    # =====================================================
+
+    "800_indoor": {
+        "display": "800 Meters Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "800m_indoor"
+    },
+
+    "1500_indoor": {
+        "display": "1500 Meters Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "1500m_indoor"
+    },
+
+    "3000_indoor": {
+        "display": "3000 Meters Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "3000m_indoor"
+    },
+
+    "5000_indoor": {
+        "display": "5000 Meters Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "5000m_indoor"
+    },
+
+    "3000S_indoor": {
+        "display": "3000m Steeplechase Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "3000S_indoor"
+    },
+
+    "1Mile_indoor": {
+        "display": "1 Mile Indoor",
+        "wa": False,
+        "season": "indoor",
+        "new_key": "1Mile_indoor"
+    },
+
+    # =====================================================
+    # XC
+    # =====================================================
+
+    "8000_xc": {
+        "display": "8000 Meters XC",
+        "wa": False,
+        "season": "xc",
+        "legacy_event": "8000 Meters"
+    }
+}
+
 
 LEGACY_CACHE = "legacy_cdf_cache.json"
 NEW_CACHE = "new_percentile_cache.json"

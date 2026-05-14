@@ -76,62 +76,70 @@ if st.button("Run"):
 
     wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
 
+    st.subheader("Performance Summary Table")
+
+    rows = []
+
+    # ---------------- WA ----------------
     if wa_points is not None:
-        st.metric(label="Points", value=int(wa_points))
+        wa_pct = None  # WA isn't percentile-based
 
-        st.subheader("Equivalent Performances")
-        desired_events = ["3000m", "5000m", "10000m", "800m", "1500m", "3000m SC"]
-        # format into nicer rows
-        for event_name, t in wa_equiv:
-            if event_name not in desired_events:
-                continue
-            col1, col2 = st.columns([2, 1])
-
-            with col1:
-                st.write(event_name)
-
-            with col2:
-                st.write(fmt_time(t))
+        rows.append({
+            "System": "World Athletics",
+            "Percentile": "N/A",
+            "Main Output": f"{int(wa_points)} pts",
+            "Key Equivalents": ", ".join(
+                f"{e}: {fmt_time(t)}"
+                for e, t in wa_equiv
+                if e in ["3000m", "5000m", "10000m", "800m", "1500m"]
+            )
+        })
 
     # ---------------- NEW ----------------
-    st.subheader("2023-2026 PR Percentile")
-
-    p, results = run_new_percentile(new_cdf, event_key, t_sec)
-
     if p is not None:
-        st.metric("Percentile", f"{100 - p:.2f}")
-
-        for k, v in results:
-            st.write(k, fmt_time(v))
+        rows.append({
+            "System": "2023–2026 PR",
+            "Percentile": f"{100 - p:.2f}",
+            "Main Output": "DIII recent pool",
+            "Key Equivalents": ", ".join(
+                f"{k}: {fmt_time(v)}"
+                for k, v in results[:3]
+            )
+        })
 
     # ---------------- LEGACY ----------------
-    st.subheader("2015-2025 All Performances Percentile")
-
-    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
-
     if p2 is not None:
-        st.metric("Percentile", f"{100 - p2:.2f}")
+        rows.append({
+            "System": "2015–2025 All",
+            "Percentile": f"{100 - p2:.2f}",
+            "Main Output": "DIII full history",
+            "Key Equivalents": ", ".join(
+                f"{k}: {fmt_time(v)}"
+                for k, v in results2[:3]
+            )
+        })
 
-        for k, v in results2:
-            st.write(k, fmt_time(v))
-    
+    st.dataframe(rows, use_container_width=True)
+        
 
 st.subheader("Notes")
 
 st.write(
     "World Athletics Score is calculated based on the world athletics chart linked here: "
     "https://worldathletics.org/about-iaaf/documents/technical-information\n"
-    "2023-2026 PR Percentile is calculated based on the PRs of over 99 percent of DIII runners from 2023-26."
-    "This data was scraped from TFRRS.\n"
+)
+
+st.write(
     "2015-2025 All Performances Percentile is calculated based on over 130,000 DIII track performances and over 150,000 XC performances."
     "This data was scraped from Athletic.net."
-    "\nAll Percentile data removes 0.5 percent of slow data. This means that the percentiles of times the bottom 50 percent may be higher on this website."
+)
+
+st.write(
+    "All Percentile data removes 0.5 percent of slow data. This means that the percentiles of times the bottom 50 percent may be higher on this website."
     "For example, if a time is 30th percentile, its true percentile may be 26th to 29th percentile, depending on the specific data."
     "The reason for this is so this website works as a better conversion calculater than a percentile finder."
 )
 
 st.write(
     "Conversion limitations: There are certain limitations on conversions, such as not being able to convert an indoor event to a World Athletics time."
-    
-
 )

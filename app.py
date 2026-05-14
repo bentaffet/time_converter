@@ -1,7 +1,6 @@
 import streamlit as st
 import csv
 from core import *
-import pandas as pd
 
 LEGACY_CACHE = "legacy_cdf_cache.json"
 NEW_CACHE = "new_percentile_cache.json"
@@ -54,15 +53,6 @@ legacy_cdf = load_cache_file(LEGACY_CACHE)
 new_cdf = load_cache_file(NEW_CACHE)
 wa_table = load_points_table(WA_CSV_PATH)
 
-WA_NAME_MAP = {
-    "800_outdoor": "800m",
-    "1500_outdoor": "1500m",
-    "3000_outdoor": "3000m",
-    "5000_outdoor": "5000m",
-    "10000_outdoor": "10000m",
-    "3000S_outdoor": "3000m SC",
-    "1Mile_outdoor": "1 Mile",
-}
 
 # -----------------------------
 # UI
@@ -86,60 +76,45 @@ if st.button("Run"):
 
     wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
 
-    st.subheader("Performance Summary Table")
-
-    rows = []
-
-    wa_points, wa_equiv = get_score(event_key, t_sec, wa_table)
-    p, results = run_new_percentile(new_cdf, event_key, t_sec)
-    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
-
-    # ---------------- WA ----------------
     if wa_points is not None:
-        wa_row = {
-            "System": "World Athletics",
-            "Score": wa_points,
-            "Percentile": None
-        }
+        st.metric(label="Points", value=int(wa_points))
 
-        wa_dict = dict(wa_equiv)
+        st.subheader("Equivalent Performances")
+        desired_events = ["3000m", "5000m", "10000m", "800m", "1500m", "3000m SC"]
+        # format into nicer rows
+        for event_name, t in wa_equiv:
+            if event_name not in desired_events:
+                continue
+            col1, col2 = st.columns([2, 1])
 
-        for event_key2, wa_name in WA_NAME_MAP.items():
-            val = wa_dict.get(wa_name)
-            wa_row[wa_name] = fmt_time(val) if val is not None else ""
+            with col1:
+                st.write(event_name)
+
+            with col2:
+                st.write(fmt_time(t))
 
     # ---------------- NEW ----------------
+    st.subheader("2023-2026 PR Percentile")
+
+    p, results = run_new_percentile(new_cdf, event_key, t_sec)
+
     if p is not None:
-        new_row = {
-            "System": "2023–2026 PR",
-            "Score": None,
-            "Percentile": round(100 - p, 2)
-        }
+        st.metric("Percentile", f"{100 - p:.2f}")
 
         for k, v in results:
-            col = get_display_name(k, system="new")
-            new_row[col] = fmt_time(v)
-
-        rows.append(new_row)
+            st.write(k, fmt_time(v))
 
     # ---------------- LEGACY ----------------
+    st.subheader("2015-2025 All Performances Percentile")
+
+    p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
+
     if p2 is not None:
-        legacy_row = {
-            "System": "2015–2025 All",
-            "Score": None,
-            "Percentile": round(100 - p2, 2)
-        }
+        st.metric("Percentile", f"{100 - p2:.2f}")
 
         for k, v in results2:
-            col = get_display_name(k, system="legacy")
-            legacy_row[col] = fmt_time(v)
-
-        rows.append(legacy_row)
-
-    df = pd.DataFrame(rows)
-
-    st.dataframe(df, width="stretch")
-        
+            st.write(k, fmt_time(v))
+    
 
 st.subheader("Notes")
 

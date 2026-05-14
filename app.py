@@ -1,6 +1,7 @@
 import streamlit as st
 import csv
 from core import *
+import pandas as pd
 
 LEGACY_CACHE = "legacy_cdf_cache.json"
 NEW_CACHE = "new_percentile_cache.json"
@@ -97,14 +98,14 @@ if st.button("Run"):
     if wa_points is not None:
         wa_row = {
             "System": "World Athletics",
-            "Score": int(wa_points),
-            "Percentile": "—"
+            "Score": wa_points,
+            "Percentile": None
         }
 
         for k, wa_name in WA_NAME_MAP.items():
             wa_row[wa_name] = next(
                 (fmt_time(t) for e, t in wa_equiv if e == wa_name),
-                ""
+                None
             )
 
         rows.append(wa_row)
@@ -113,8 +114,8 @@ if st.button("Run"):
     if p is not None:
         new_row = {
             "System": "2023–2026 PR",
-            "Score": "—",
-            "Percentile": f"{100 - p:.2f}"
+            "Score": None,
+            "Percentile": round(100 - p, 2)
         }
 
         for k, v in results:
@@ -127,8 +128,8 @@ if st.button("Run"):
     if p2 is not None:
         legacy_row = {
             "System": "2015–2025 All",
-            "Score": "—",
-            "Percentile": f"{100 - p2:.2f}"
+            "Score": None,
+            "Percentile": round(100 - p2, 2)
         }
 
         for k, v in results2:
@@ -137,7 +138,9 @@ if st.button("Run"):
 
         rows.append(legacy_row)
 
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    df = pd.DataFrame(rows)
+
+    st.dataframe(df, use_container_width=True, hide_index=True)
         
 
 st.subheader("Notes")

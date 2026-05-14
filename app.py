@@ -79,7 +79,7 @@ if st.button("Run"):
         st.metric("Points", wa)
 
     # ---------------- NEW ----------------
-    st.subheader("Recent Percentile")
+    st.subheader("2023-2026 PR Percentile")
 
     p, results = run_new_percentile(new_cdf, event_key, t_sec)
 
@@ -90,7 +90,7 @@ if st.button("Run"):
             st.write(k, fmt_time(v))
 
     # ---------------- LEGACY ----------------
-    st.subheader("Historical Percentile")
+    st.subheader("2015-2025 All Performances Percentile")
 
     p2, results2 = run_legacy_percentile(legacy_cdf, event_key, t_sec)
 
@@ -99,3 +99,9 @@ if st.button("Run"):
 
         for k, v in results2:
             st.write(k, fmt_time(v))
+    
+
+st.subheader("Notes")
+
+notes = st.text_area("World Athletics")
+st.write(notes)

@@ -209,25 +209,37 @@ def inverse_lookup(table, p):
 # WA SCORE (RETURN NOT PRINT)
 # -----------------------------
 
-def get_score(event_key, time_sec, table):
+def get_score(event_key, time_str, table):
     cfg = EVENT_MAP[event_key]
 
-    if not cfg.get("wa"):
-        return None
+    if not cfg["wa"]:
+        return
 
     race_key = cfg["wa_key"]
-    parsed = []
 
-    for pts, t_str in table[race_key].items():
-        t_sec = parse_time(t_str)
-        if t_sec is not None:
-            parsed.append((pts, t_sec))
+    if race_key not in table:
+        print(f"No WA data for {race_key}")
+        return
 
-    parsed.sort(key=lambda x: x[1])
+    t_input = parse_time(time_str)
 
-    best_pts = min(parsed, key=lambda x: abs(x[1] - time_sec))[0]
+    points_times = [
+        (pts, parse_time(t))
+        for pts, t in table[race_key].items()
+        if parse_time(t) is not None
+    ]
 
-    return best_pts
+    points_times.sort(key=lambda x: x[1])
+
+    # nearest neighbor (safe version)
+    best_pts, _ = min(
+        points_times,
+        key=lambda x: abs(x[1] - t_input)
+    )
+
+    print("\nWorld Athletics Conversion")
+    print("========================")
+    print(f"Score: {best_pts} points")
 
 
 # -----------------------------

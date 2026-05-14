@@ -58,7 +58,7 @@ wa_table = load_points_table(WA_CSV_PATH)
 # UI
 # -----------------------------
 
-st.title("🏃 Athletics Performance Tool")
+st.title("Division III Time Conversion Tool")
 
 event_key = st.selectbox("Event", list(EVENT_MAP.keys()))
 time_input = st.text_input("Time (e.g. 4:07.22)")
@@ -118,5 +118,14 @@ if st.button("Run"):
 
 st.subheader("Notes")
 
-notes = st.text_area("World Athletics")
-st.write(notes)
+notes = st.text_area(
+    "World Athletics Score is calculated based on the world athletics chart linked here: "
+    "https://worldathletics.org/about-iaaf/documents/technical-information\n"
+    "2023-2026 PR Percentile is calculated based on the PRs of over 99 percent of DIII runners from 2023-26."
+    "This data was scraped from TFRRS.\n"
+    "2015-2025 All Performances Percentile is calculated based on over 130,000 DIII track performances and over 150,000 XC performances."
+    "This data was scraped from Athletic.net."
+    "\nAll Percentile data removes 0.5 percent of slow data. This means that the percentiles of times the bottom 50 percent may be higher on this website."
+    "For example, if a time is 30th percentile, its true percentile may be 26th to 29th percentile, depending on the specific data."
+    "The reason for this is so this website works as a better conversion calculater than a percentile finder."
+)

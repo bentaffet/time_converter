@@ -1,7 +1,4 @@
-import json
 import re
-import os
-import csv
 from bisect import bisect_left
 
 # -----------------------------
@@ -59,7 +56,8 @@ EVENT_MAP = {
 
     "3000S_outdoor": {
         "display": "3000m Steeplechase Outdoor",
-        "wa": False,
+        "wa": True,
+        "wa_key": "3000m SC",
         "season": "outdoor",
         "new_key": "3000S_outdoor"
     },

@@ -118,7 +118,7 @@ if st.button("Run"):
 
 st.subheader("Notes")
 
-notes = st.text_area(
+st.write(
     "World Athletics Score is calculated based on the world athletics chart linked here: "
     "https://worldathletics.org/about-iaaf/documents/technical-information\n"
     "2023-2026 PR Percentile is calculated based on the PRs of over 99 percent of DIII runners from 2023-26."
@@ -128,4 +128,10 @@ notes = st.text_area(
     "\nAll Percentile data removes 0.5 percent of slow data. This means that the percentiles of times the bottom 50 percent may be higher on this website."
     "For example, if a time is 30th percentile, its true percentile may be 26th to 29th percentile, depending on the specific data."
     "The reason for this is so this website works as a better conversion calculater than a percentile finder."
+)
+
+st.write(
+    "Conversion limitations: There are certain limitations on conversions, such as not being able to convert an indoor event to a World Athletics time."
+    
+
 )
